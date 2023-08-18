@@ -1,6 +1,6 @@
 import { AdminStore } from './src/adminStore';
 import { JSONObject } from './src/json-types';
-import { Store } from './src/store';
+import { Restrict, Store } from './src/store';
 import { UserStore } from './src/userStore';
 
 const userStore = new UserStore();
@@ -70,3 +70,24 @@ try {
 } catch (error) {
   console.log('happy');
 }
+
+console.log('-------------------');
+
+class TestStore extends Store {
+  @Restrict('none')
+  public restrictedProp?: string;
+}
+const testStore = new TestStore();
+
+try {
+  testStore.write('restrictedProp', 'new value');
+} catch (error) {
+  console.log('happy');
+}
+
+class TestStore2 extends Store {
+  @Restrict('r')
+  public readableProperty = 'test';
+}
+const testStore2 = new TestStore2();
+expect(testStore2.entries()).toHaveProperty('readableProperty', 'test');

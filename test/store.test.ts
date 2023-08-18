@@ -189,44 +189,44 @@ describe('Restricted Store', () => {
   });
 });
 
-// /*
+/*
 
-// 6. Test Store Decorators
+6. Test Store Decorators
 
-// These tests ensure that decorators work as expected, especially when it comes to restricted properties.
+These tests ensure that decorators work as expected, especially when it comes to restricted properties.
 
-// */
+*/
 
-// describe("Test Store - Decorators", () => {
-//   it("trying to set restricted property", () => {
-//     class TestStore extends Store {
-//       @Restrict("none")
-//       public restrictedProp?: string;
-//     }
-//     const testStore = new TestStore();
-//     expect(() => {
-//       testStore.write("restrictedProp", "new value");
-//     }).toThrow(Error);
-//   });
+describe('Test Store - Decorators', () => {
+  it('trying to set restricted property', () => {
+    class TestStore extends Store {
+      @Restrict('none')
+      public restrictedProp?: string;
+    }
+    const testStore = new TestStore();
+    expect(() => {
+      testStore.write('restrictedProp', 'new value');
+    }).toThrow(Error);
+  });
 
-//   it("entries method shows restricted properties", () => {
-//     class TestStore extends Store {
-//       @Restrict("r")
-//       public readableProperty = "test";
-//     }
-//     const testStore = new TestStore();
-//     expect(testStore.entries()).toHaveProperty("readableProperty", "test");
-//   });
+  it('entries method shows restricted properties', () => {
+    class TestStore extends Store {
+      @Restrict('r')
+      public readableProperty = 'test';
+    }
+    const testStore = new TestStore();
+    expect(testStore.entries()).toHaveProperty('readableProperty', 'test');
+  });
 
-//   it("entries method hides restricted properties", () => {
-//     class TestStore extends Store {
-//       @Restrict("none")
-//       public restrictedProp = "test";
-//     }
-//     const testStore = new TestStore();
-//     expect(testStore.entries()).not.toHaveProperty("restrictedProp");
-//   });
-// });
+  it('entries method hides restricted properties', () => {
+    class TestStore extends Store {
+      @Restrict('none')
+      public restrictedProp = 'test';
+    }
+    const testStore = new TestStore();
+    expect(testStore.entries()).not.toHaveProperty('restrictedProp');
+  });
+});
 
 // /*
 

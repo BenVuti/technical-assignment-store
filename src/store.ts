@@ -21,14 +21,17 @@ export interface IStore {
   entries(): JSONObject;
 }
 
+const METADATA_KEY = 'restrict-decorator';
+
 export function Restrict(restriction = ''): any {
   return function (target: any, propertyKey: string) {
     const metadata = {
       canRead: restriction.includes('r'),
       canWrite: restriction.includes('w'),
+      overrideDefaultPolicy: restriction === 'none',
     };
 
-    Reflect.defineMetadata('restrict-decorator', metadata, target, propertyKey);
+    Reflect.defineMetadata(METADATA_KEY, metadata, target, propertyKey);
   };
 }
 
@@ -37,15 +40,19 @@ export class Store implements IStore {
   [key: string]: any;
 
   allowedToRead(key: string): boolean {
-    const metadata = Reflect.getMetadata('restrict-decorator', this, key);
-    return metadata?.canRead || this.defaultPolicy.includes('r');
+    const metadata = Reflect.getMetadata(METADATA_KEY, this, key);
+
+    return metadata?.overrideDefaultPolicy
+      ? metadata?.canRead
+      : metadata?.canRead || this.defaultPolicy.includes('r');
   }
 
   allowedToWrite(key: string): boolean {
-    const metadata = Reflect.getMetadata('restrict-decorator', this, key);
-    console.log(metadata);
+    const metadata = Reflect.getMetadata(METADATA_KEY, this, key);
 
-    return metadata?.canWrite || this.defaultPolicy.includes('w');
+    return metadata?.overrideDefaultPolicy
+      ? metadata?.canWrite
+      : metadata?.canWrite || this.defaultPolicy.includes('w');
   }
 
   read(path: string): StoreResult {
@@ -113,7 +120,20 @@ export class Store implements IStore {
   }
 
   entries(): JSONObject {
-    throw new Error('Method not implemented.');
+    const entries: JSONObject = {};
+
+    for (const key of Object.keys(this)) {
+      if (this.allowedToRead(key)) {
+        const value = this[key];
+        if (value instanceof Store) {
+          entries[key] = value.entries();
+        } else {
+          entries[key] = value;
+        }
+      }
+    }
+
+    return entries;
   }
 
   processValue(value: StoreValue): StoreValue {
