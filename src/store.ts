@@ -89,13 +89,9 @@ export class Store implements IStore {
 
     for (let i = 0; i < pathParts.length - 1; i++) {
       const part = pathParts[i];
-      console.log(i);
 
-      if (
-        currentObject instanceof Store &&
-        i === pathParts.length - 2 &&
-        !currentObject.allowedToWrite(part)
-      ) {
+      // only checking the permission on object we write on
+      if (i === pathParts.length - 2 && !currentObject.allowedToWrite(part)) {
         throw new Error(`Cannot write property ${path}`);
       }
 
@@ -106,13 +102,13 @@ export class Store implements IStore {
       currentObject = currentObject[part];
     }
 
-    if (
-      currentObject instanceof Store &&
-      !currentObject.allowedToWrite(pathParts[pathParts.length - 1])
-    ) {
+    const lastPart = pathParts[pathParts.length - 1];
+
+    if (!currentObject.allowedToWrite(lastPart)) {
       throw new Error(`Cannot write property ${path}`);
     }
-    currentObject[pathParts[pathParts.length - 1]] = value;
+
+    currentObject[lastPart] = value;
 
     return this;
   }
@@ -140,6 +136,7 @@ export class Store implements IStore {
     return entries;
   }
 
+  // every nested objet needs to be a Store as well
   processValue(value: StoreValue): StoreValue {
     if (typeof value !== 'object') return value;
 
