@@ -129,65 +129,65 @@ describe('Nested Store Operations', () => {
 
 /*
 
-// 4. Function Read Operations
+4. Function Read Operations
 
-// This tests the ability of the AdminStore class to read from a function result.
+This tests the ability of the AdminStore class to read from a function result.
 
-// */
+*/
 
-// describe("AdminStore class - Function Read", () => {
-//   let adminStore: AdminStore;
+describe('AdminStore class - Function Read', () => {
+  let adminStore: AdminStore;
 
-//   beforeEach(() => {
-//     const userStore = new UserStore();
-//     adminStore = new AdminStore(userStore);
-//   });
+  beforeEach(() => {
+    const userStore = new UserStore();
+    adminStore = new AdminStore(userStore);
+  });
 
-//   it("should be allowed to read from a function result", () => {
-//     expect(adminStore.read("getCredentials:username")).toBe("user1");
-//   });
-// });
+  it('should be allowed to read from a function result', () => {
+    expect(adminStore.read('getCredentials:username')).toBe('user1');
+  });
+});
 
-// /*
+/*
 
-// 5. Restricted Store Operations
+5. Restricted Store Operations
 
-// These tests validate the behavior of a restricted store, ensuring that restricted keys can't be read or written.
+These tests validate the behavior of a restricted store, ensuring that restricted keys can't be read or written.
 
-// */
+*/
 
-// describe("Restricted Store", () => {
-//   let store: Store;
+describe('Restricted Store', () => {
+  let store: Store;
 
-//   beforeEach(() => {
-//     store = new Store();
-//     store.defaultPolicy = "none"; // Restrict all keys
-//   });
+  beforeEach(() => {
+    store = new Store();
+    store.defaultPolicy = 'none'; // Restrict all keys
+  });
 
-//   it("write restricted key", () => {
-//     expect(() => {
-//       return store.write("restrictedKey", "testValue");
-//     }).toThrow(Error);
-//   });
+  it('write restricted key', () => {
+    expect(() => {
+      return store.write('restrictedKey', 'testValue');
+    }).toThrow(Error);
+  });
 
-//   it("read restricted key", () => {
-//     expect(() => {
-//       return store.read("restrictedKey");
-//     }).toThrow(Error);
-//   });
+  it('read restricted key', () => {
+    expect(() => {
+      return store.read('restrictedKey');
+    }).toThrow(Error);
+  });
 
-//   it("write nested restricted key", () => {
-//     expect(() => {
-//       return store.write("nested:restrictedKey", "testValue");
-//     }).toThrow(Error);
-//   });
+  it('write nested restricted key', () => {
+    expect(() => {
+      return store.write('nested:restrictedKey', 'testValue');
+    }).toThrow(Error);
+  });
 
-//   it("read nested restricted key", () => {
-//     expect(() => {
-//       return store.read("nested:restrictedKey");
-//     }).toThrow(Error);
-//   });
-// });
+  it('read nested restricted key', () => {
+    expect(() => {
+      return store.read('nested:restrictedKey');
+    }).toThrow(Error);
+  });
+});
 
 // /*
 

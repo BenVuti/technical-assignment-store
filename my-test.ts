@@ -41,19 +41,32 @@ try {
 
 console.log('-------------------');
 
-const store = new Store();
-const entries: JSONObject = { a: 'value1', b: { c: 'value2' } };
+let store = new Store();
+let entries: JSONObject = { a: 'value1', b: { c: 'value2' } };
 store.writeEntries(entries);
 console.log(store.read('a'));
 console.log(store.read('b:c'));
 
 console.log('-------------------');
 
-// const store = new Store();
-// const entries: JSONObject = { value: 'value', store: { value: 'value' } };
-// store.write('deep', entries);
-// const cStore = store.read('deep:store') as Store;
-// console.log(cStore, cStore instanceof Store);
+store = new Store();
+entries = { value: 'value', store: { value: 'value' } };
+store.write('deep', entries);
+const cStore = store.read('deep:store') as Store;
+cStore.write('deep', entries);
+console.log(store.read('deep:store:deep:store:value'));
 
-// cStore.write('deep', entries);
-// store.read('deep:store:deep:store:value');
+console.log('-------------------');
+
+console.log(adminStore.read('getCredentials:username'));
+
+console.log('-------------------');
+
+store = new Store();
+store.defaultPolicy = 'none'; // Restrict all keys
+
+try {
+  store.write('restrictedKey', 'testValue');
+} catch (error) {
+  console.log('happy');
+}

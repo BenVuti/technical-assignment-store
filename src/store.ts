@@ -59,8 +59,12 @@ export class Store implements IStore {
       ) {
         throw new Error(`Cannot read property ${path}`);
       }
-
-      currentObject = currentObject[part];
+      // if the current object is a function, call it
+      if (typeof currentObject[part] === 'function') {
+        currentObject = currentObject[part]();
+      } else {
+        currentObject = currentObject[part];
+      }
     }
 
     return currentObject as StoreResult;
@@ -81,8 +85,6 @@ export class Store implements IStore {
         i === pathParts.length - 2 &&
         !currentObject.allowedToWrite(part)
       ) {
-        console.log(pathParts);
-
         throw new Error(`Cannot write property ${path}`);
       }
 
@@ -91,10 +93,14 @@ export class Store implements IStore {
       }
 
       currentObject = currentObject[part];
-
-      console.log('?', currentObject instanceof Store);
     }
 
+    if (
+      currentObject instanceof Store &&
+      !currentObject.allowedToWrite(pathParts[pathParts.length - 1])
+    ) {
+      throw new Error(`Cannot write property ${path}`);
+    }
     currentObject[pathParts[pathParts.length - 1]] = value;
 
     return this;
