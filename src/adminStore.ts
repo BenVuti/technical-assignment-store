@@ -8,7 +8,7 @@ export class AdminStore extends Store {
   @Restrict('r')
   public user: UserStore;
   @Restrict()
-  name: string = 'John Doe';
+  name = 'John Doe';
   @Restrict('rw')
   getCredentials = (): Store => {
     return credentialStore;
