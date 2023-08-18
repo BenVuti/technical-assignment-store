@@ -1,6 +1,6 @@
-import { JSONArray, JSONObject, JSONPrimitive } from "./json-types";
-import "reflect-metadata";
-export type Permission = "r" | "w" | "rw" | "none";
+import { JSONArray, JSONObject, JSONPrimitive } from './json-types';
+import 'reflect-metadata';
+export type Permission = 'r' | 'w' | 'rw' | 'none';
 
 export type StoreResult = Store | JSONPrimitive | undefined;
 
@@ -20,34 +20,32 @@ export interface IStore {
   entries(): JSONObject;
 }
 
-export function Restrict(restriction: string = ""): any {
+export function Restrict(restriction: string = ''): any {
   return function (target: any, propertyKey: string) {
-    
     let metadata = {
-      canRead : restriction.includes("r"),
-      canWrite : restriction.includes("w"),
-    }
+      canRead: restriction.includes('r'),
+      canWrite: restriction.includes('w'),
+    };
 
-    Reflect.defineMetadata("restrict-decorator", metadata, target, propertyKey);
+    Reflect.defineMetadata('restrict-decorator', metadata, target, propertyKey);
   };
 }
 
 export class Store implements IStore {
-  defaultPolicy: Permission = "rw";
+  defaultPolicy: Permission = 'rw';
   [key: string]: any;
 
   allowedToRead(key: string): boolean {
-    const metadata = Reflect.getMetadata("restrict-decorator", this, key);
-    return metadata?.canRead || this.defaultPolicy.includes("r");
+    const metadata = Reflect.getMetadata('restrict-decorator', this, key);
+    return metadata?.canRead || this.defaultPolicy.includes('r');
   }
 
   allowedToWrite(key: string): boolean {
-    const metadata = Reflect.getMetadata("restrict-decorator", this, key);
-    return metadata?.canWrite || this.defaultPolicy.includes("w");
+    const metadata = Reflect.getMetadata('restrict-decorator', this, key);
+    return metadata?.canWrite || this.defaultPolicy.includes('w');
   }
 
   read(path: string): StoreResult {
-    
     if (!this.allowedToRead(path)) {
       throw new Error(`Cannot read property ${path}`);
     } else {
@@ -72,8 +70,6 @@ export class Store implements IStore {
   }
 
   entries(): JSONObject {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
-
 }
-
