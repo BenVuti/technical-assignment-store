@@ -25,11 +25,15 @@ const METADATA_KEY = 'restrict-decorator';
 
 export function Restrict(restriction = ''): any {
   return function (target: any, propertyKey: string) {
-    const metadata = {
+    let metadata = Reflect.getMetadata(METADATA_KEY, target, propertyKey);
+
+    metadata = {
       canRead: restriction.includes('r'),
       canWrite: restriction.includes('w'),
-      overrideDefaultPolicy: restriction === 'none',
+      overrideDefaultPolicy: restriction !== '',
     };
+
+    console.log(metadata);
 
     Reflect.defineMetadata(METADATA_KEY, metadata, target, propertyKey);
   };

@@ -85,9 +85,19 @@ try {
   console.log('happy');
 }
 
-class TestStore2 extends Store {
-  @Restrict('r')
-  public readableProperty = 'test';
+console.log('-------------------');
+
+class TestStore3 extends Store {
+  @Restrict('rw')
+  public prop?: string;
 }
-const testStore2 = new TestStore2();
-expect(testStore2.entries()).toHaveProperty('readableProperty', 'test');
+const testStore3 = new TestStore3();
+testStore3.write('prop', 'value1');
+console.log(testStore3.allowedToRead('prop'), true);
+console.log(testStore3.allowedToWrite('prop'), true);
+
+// Change permissions
+Restrict('r')(testStore3, 'prop');
+
+console.log(testStore3.allowedToRead('prop'), true);
+console.log(testStore3.allowedToWrite('prop'), false);

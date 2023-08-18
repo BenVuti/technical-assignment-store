@@ -228,110 +228,110 @@ describe('Test Store - Decorators', () => {
   });
 });
 
-// /*
+/*
 
-// 7. Test Default Policy Behavior
+7. Test Default Policy Behavior
 
-// These tests ensure that default policies are correctly applied to keys with no explicit permissions set.
+These tests ensure that default policies are correctly applied to keys with no explicit permissions set.
 
-// */
+*/
 
-// describe("Test Store - Default Policy Behavior", () => {
-//   it("disallows writing a key with with default read permission", () => {
-//     class TestStore extends Store {
-//       public defaultPolicy: Permission = "r";
-//       public nonRestrictedProp?: string;
-//     }
-//     const testStore = new TestStore();
-//     expect(() => {
-//       testStore.write("nonRestrictedProp", "testValue");
-//     }).toThrow(Error);
-//   });
+describe('Test Store - Default Policy Behavior', () => {
+  it('disallows writing a key with with default read permission', () => {
+    class TestStore extends Store {
+      public defaultPolicy: Permission = 'r';
+      public nonRestrictedProp?: string;
+    }
+    const testStore = new TestStore();
+    expect(() => {
+      testStore.write('nonRestrictedProp', 'testValue');
+    }).toThrow(Error);
+  });
 
-//   it("allows writing a key with no explicit permissions", () => {
-//     class TestStore extends Store {
-//       public defaultPolicy: Permission = "r";
-//       public nonRestrictedProp?: string;
-//     }
-//     const testStore = new TestStore();
-//     expect(() => {
-//       testStore.write("nonRestrictedProp", "new value");
-//     }).toThrow(Error);
-//   });
-// });
+  it('allows writing a key with no explicit permissions', () => {
+    class TestStore extends Store {
+      public defaultPolicy: Permission = 'r';
+      public nonRestrictedProp?: string;
+    }
+    const testStore = new TestStore();
+    expect(() => {
+      testStore.write('nonRestrictedProp', 'new value');
+    }).toThrow(Error);
+  });
+});
 
-// /*
+/*
 
-// 8. Test Multiple Levels of Nested Keys
+8. Test Multiple Levels of Nested Keys
 
-// These tests ensure that the system can correctly handle multi-level nested keys.
+These tests ensure that the system can correctly handle multi-level nested keys.
 
-// */
+*/
 
-// describe("Test Store - Multiple Levels of Nested Keys", () => {
-//   it("allows writing and reading multi-level nested keys", () => {
-//     const store = new Store();
-//     store.write("level1:level2:level3", "testValue");
-//     expect(store.read("level1:level2:level3")).toBe("testValue");
-//   });
-// });
+describe('Test Store - Multiple Levels of Nested Keys', () => {
+  it('allows writing and reading multi-level nested keys', () => {
+    const store = new Store();
+    store.write('level1:level2:level3', 'testValue');
+    expect(store.read('level1:level2:level3')).toBe('testValue');
+  });
+});
 
-// /*
+/*
 
-// 9. Test Behavior when the Same Key is Used Multiple Times
+9. Test Behavior when the Same Key is Used Multiple Times
 
-// These tests verify the behavior of the system when keys are overwritten or permissions are changed.
+These tests verify the behavior of the system when keys are overwritten or permissions are changed.
 
-// */
+*/
 
-// describe("Test Store - Behavior when Same Key is Used Multiple Times", () => {
-//   it("overwrites key with new value", () => {
-//     const store = new Store();
-//     store.defaultPolicy = "rw";
-//     store.write("key", "value1");
-//     store.write("key", "value2");
-//     expect(store.read("key")).toBe("value2");
-//   });
+describe('Test Store - Behavior when Same Key is Used Multiple Times', () => {
+  it('overwrites key with new value', () => {
+    const store = new Store();
+    store.defaultPolicy = 'rw';
+    store.write('key', 'value1');
+    store.write('key', 'value2');
+    expect(store.read('key')).toBe('value2');
+  });
 
-//   it("updates key permissions", () => {
-//     class TestStore extends Store {
-//       @Restrict("rw")
-//       public prop?: string;
-//     }
-//     const testStore = new TestStore();
-//     testStore.write("prop", "value1");
-//     expect(testStore.allowedToRead("prop")).toBe(true);
-//     expect(testStore.allowedToWrite("prop")).toBe(true);
+  it('updates key permissions', () => {
+    class TestStore extends Store {
+      @Restrict('rw')
+      public prop?: string;
+    }
+    const testStore = new TestStore();
+    testStore.write('prop', 'value1');
+    expect(testStore.allowedToRead('prop')).toBe(true);
+    expect(testStore.allowedToWrite('prop')).toBe(true);
 
-//     // Change permissions
-//     Restrict("r")(testStore, "prop");
+    // Change permissions
+    Restrict('r')(testStore, 'prop');
 
-//     expect(testStore.allowedToRead("prop")).toBe(true);
-//     expect(testStore.allowedToWrite("prop")).toBe(false);
-//   });
-// });
+    expect(testStore.allowedToRead('prop')).toBe(true);
+    expect(testStore.allowedToWrite('prop')).toBe(false);
+  });
+});
 
-// /*
+/*
 
-// 10. Test Permission Inheritance
+10. Test Permission Inheritance
 
-// These tests verify that nested keys correctly inherit permissions from their parent keys.
+These tests verify that nested keys correctly inherit permissions from their parent keys.
 
-// */
+*/
 
-// describe("Test Store - Permission Inheritance", () => {
-//   it("nested key inherits parent key's permissions", () => {
-//     class ParentStore extends Store {
-//       @Restrict("r")
-//       public parentProp = lazy(() => new ChildStore());
-//     }
-//     class ChildStore extends ParentStore {}
-//     const baseChildStore = new ChildStore();
-//     const nestedChildStore = baseChildStore.read(
-//       "parentProp:parentProp:parentProp"
-//     ) as Store;
-//     expect(nestedChildStore).toBeInstanceOf(ChildStore);
-//     expect(baseChildStore.allowedToWrite("parentProp")).toBe(false);
-//     expect(nestedChildStore.allowedToWrite("parentProp")).toBe(false);
-//   });
-// });
+describe('Test Store - Permission Inheritance', () => {
+  it("nested key inherits parent key's permissions", () => {
+    class ParentStore extends Store {
+      @Restrict('r')
+      public parentProp = lazy(() => new ChildStore());
+    }
+    class ChildStore extends ParentStore {}
+    const baseChildStore = new ChildStore();
+    const nestedChildStore = baseChildStore.read(
+      'parentProp:parentProp:parentProp'
+    ) as Store;
+    expect(nestedChildStore).toBeInstanceOf(ChildStore);
+    expect(baseChildStore.allowedToWrite('parentProp')).toBe(false);
+    expect(nestedChildStore.allowedToWrite('parentProp')).toBe(false);
+  });
+});
